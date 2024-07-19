@@ -23,7 +23,6 @@ exports.createNote = async (req, res) => {
 // Get all notes for a user
 exports.getNotes = async (req, res) => {
     const userId = req.user.id;
-
     try {
         const notes = await Note.find({ userId, archived: false, trash: false });
         res.json(notes);
@@ -122,10 +121,9 @@ exports.restoreNote = async (req, res) => {
 // Delete a note permanently
 exports.deleteNote = async (req, res) => {
     const { id } = req.params;
-    const userId = req.user.id;
-
+    const userId = req.user._id;
     try {
-        const note = await Note.findOneAndDelete({ _id: id, userId, trash: true });
+        const note = await Note.findOneAndDelete({ _id: id, userId});
         if (!note) return res.status(404).json({ error: 'Note not found' });
         res.json({ message: 'Note deleted' });
     } catch (error) {
